@@ -1,5 +1,5 @@
 [project]
-name = "google-agent"
+name = "arc-agi-babies"
 version = "0.1.0"
 description = "Add your description here"
 readme = "README.md"
@@ -7,10 +7,14 @@ authors = [
     { name = "Méo Desbois-Renaudin", email = "meo-externe.desbois-renaudin@edf.fr" }
 ]
 requires-python = ">=3.11"
-dependencies = []
+dependencies = [
+    "google-adk>=1.5.0",
+    "pydantic>=2.11.7",
+    "pydantic-settings>=2.10.1",
+]
 
 [project.scripts]
-google-agent = "google_agent:main"
+google-agent = "arc_agi_babies:main"
 
 [build-system]
 requires = ["hatchling"]
