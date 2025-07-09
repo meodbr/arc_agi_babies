@@ -8,19 +8,24 @@ from arc_agi_babies.utils import utils
 
 async def run_task(agent, task):
     session_id = f"{agent.name}-session-{str(uuid.uuid4())}"
+    session_service=InMemorySessionService()
+    memory_service=InMemoryMemoryService()
+    app_name = agent.name + "_app"
+
     runner = Runner(
-        app_name=agent.name + "_app",
+        app_name=app_name,
         agent=agent,
-        session_service=InMemorySessionService(),
-        memory_service=InMemoryMemoryService(),
+        session_service=session_service,
+        memory_service=memory_service,
     )
-    session = await runner.session_service.create_session(
-        app_name=agent.name,
+    session = await session_service.create_session(
+        app_name=app_name,
         user_id='tmp_user',
         session_id=session_id,
     )
 
-    content = types.Part.from_text(text=utils.task_to_text(task))
+    part = types.Part.from_text(text=utils.task_to_text(task))
+    content = types.Content(role='user', parts=[part])
     print(f"Content: {content}")
     print(f"Session: {session}")
 
