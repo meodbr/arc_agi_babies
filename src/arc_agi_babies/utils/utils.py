@@ -8,7 +8,7 @@ STRICT_ROW_LENGTH = False
 def force_length(lst, n, fill_value=None):
     return lst[:n] + [fill_value] * (n - len(lst))
 
-def matrix_row_sizes(matrix):
+def matrix_row_sizes(matrix: list[list[int]]) -> list[list[int]]:
     if len(matrix) < 1:
         return matrix
     width = len(matrix[0])
@@ -24,6 +24,9 @@ def matrix_row_sizes(matrix):
 
 class PixelMatrix(BaseModel):
     matrix: Annotated[list[list[int]], AfterValidator(matrix_row_sizes)]
+
+def is_solved(task, prediction):
+    return task["test"][0]["output"] == prediction
 
 def matrix_to_text(matrix: list[list[int]]) -> str:
     return "\n".join([" ".join(map(str, row)) for row in matrix])
