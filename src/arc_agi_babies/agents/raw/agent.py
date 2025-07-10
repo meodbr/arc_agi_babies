@@ -3,9 +3,7 @@ from pydantic import BaseModel, Field
 
 from arc_agi_babies.config.settings import settings
 from arc_agi_babies.agents.raw.prompt import SYSTEM_INSTRUCTIONS
-
-class OutputPixelGrid(BaseModel):
-    output: list[list[int]]
+from arc_agi_babies.utils import utils
 
 
 root_agent = Agent(
@@ -15,5 +13,7 @@ root_agent = Agent(
         "Agent solving 2D pixel puzzles"
     ),
     instruction=SYSTEM_INSTRUCTIONS,
-    output_schema=OutputPixelGrid,
+    output_schema=utils.PixelMatrix,
+    disallow_transfer_to_parent=True,
+    disallow_transfer_to_peers=True,
 )

@@ -5,6 +5,7 @@ from google.genai import types
 import uuid
 
 from arc_agi_babies.utils import utils
+from arc_agi_babies.utils.plot import plot_pixel_matrix, plot_ARC_task
 
 async def run_task(agent, task):
     session_id = f"{agent.name}-session-{str(uuid.uuid4())}"
@@ -26,13 +27,13 @@ async def run_task(agent, task):
 
     part = types.Part.from_text(text=utils.task_to_text(task))
     content = types.Content(role='user', parts=[part])
-    print(f"Content: {content}")
-    print(f"Session: {session}")
+    print(f"Text: {part.text}")
 
     last_event = None
     async for event in runner.run_async(user_id=session.user_id, session_id=session_id, new_message=content):
-        print("hey")
         last_event = event
-        print(last_event)
+    pixel_matrix = utils.PixelMatrix.model_validate_json(last_event.content.parts[0].text)
+    print(f"last_event : {last_event}")
+    plot_ARC_task(task, pixel_matrix.matrix)
 
     return 0
