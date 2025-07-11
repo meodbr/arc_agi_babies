@@ -17,6 +17,7 @@ PALETTE = [
     "#ffffff",
 ]
 CMAP = ListedColormap(PALETTE)
+IMAGES_DIR = "data/images"
 
 def plot_ARC_image(pixel_grid: list[list[int]]):
     plot_ARC_image_np_array(np.array(pixel_grid))
@@ -32,7 +33,7 @@ def plot_formatted_image(formatted):
     image = np.argmax(formatted, axis=0)
     plot_ARC_image(image)
 
-def plot_ARC_task(task: dict[str, Any], prediction=None):
+def plot_ARC_task(task: dict[str, Any], prediction=None, title=None, save=False):
     
     prediction_col = []
     if prediction and "test" in task.keys():
@@ -54,6 +55,18 @@ def plot_ARC_task(task: dict[str, Any], prediction=None):
             ax.imshow(images[j][i], cmap=CMAP, vmin=0, vmax=len(PALETTE)-1)
             ax.axis("off")
     
-    plt.tight_layout()
-    plt.show()
+    # Add global title
+    if not title:
+        title = task["name"] if "name" in task.keys() else "Task"
+    fig.suptitle(title, fontsize=16)
+
+    fig.tight_layout()
+
+    # Save
+    if save:
+        fig.savefig(f"{IMAGES_DIR}/{title}.png")
+    else:
+        plt.show()
+
+    
 

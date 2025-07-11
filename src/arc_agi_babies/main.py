@@ -36,22 +36,32 @@ async def run_folder(agent, folder_path, max_tasks=10):
 def main(args) -> int:
     tasks_folder = pathlib.Path(args[1])
 
-    if not tasks_folder.is_dir():
+    if not tasks_folder.is_dir() and not tasks_folder.is_file():
         print(f"Error: {tasks_folder} is not a folder.")
         return 1
 
-    results = asyncio.run(run_folder(root_agent, tasks_folder))
+    results = []
+    if tasks_folder.is_dir():
+        results = asyncio.run(run_folder(root_agent, tasks_folder, max_tasks=5))
+    else:
+        results = [asyncio.run(process_task_file(root_agent, tasks_folder))]
+
+    sum = 0
     for res_dict in results:
         task = res_dict["task"]
         prediction = res_dict["prediction"]
         is_solved = utils.is_solved(task, prediction)
         solved_string = "Solved" if is_solved else "Failed"
         print(f"Task {res_dict['name']}: {solved_string}")
+        if is_solved:
+            sum += 1
+    mean = sum / len(results)
+    print(f"Tasks solved: {sum}/{len(results)} {mean*100:.1f}%")
     
     input("appuyez sur entrée")
     for res_dict in results:
-        print(res_dict)
-        plot_ARC_task(res_dict['task'], res_dict['prediction'])
+        result_name = f"{res_dict['name']}_{root_agent.name}"
+        plot_ARC_task(res_dict['task'], res_dict['prediction'], result_name, save=False)
 
 
 
